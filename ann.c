@@ -121,7 +121,7 @@ void ann_start_qlearning(int epochs, float gamma, float epsilon, int steps_ms)
 	// for(int i = 0; i < NUM_SERVO_MOT; i++)
 	// 	servo_set_value(i, 1450, 500, 200);
 
-	HAL_Delay(1000);
+	// HAL_Delay(1000);
 
 	//save start distance
 	old_distance = 1000;
@@ -189,7 +189,7 @@ void ann_start_qlearning(int epochs, float gamma, float epsilon, int steps_ms)
 		for( iii = 0; iii < DISTANCE_MEASURE_MEDIAN; iii++)
 		{
 			//a bit more time to measure the actual distance correct
-			HAL_Delay(25);
+			// HAL_Delay(25);
 			//check distance
 			new_dist = 100;
 
@@ -368,7 +368,7 @@ void ann_start_qlearning(int epochs, float gamma, float epsilon, int steps_ms)
 			// 	HAL_Delay(50);
 			// }
 			// HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, 0);
-			HAL_Delay(1000);
+			// HAL_Delay(1000);
 			old_distance = hcsr04_getLastDistance_mm();
 
 			continue;
@@ -388,15 +388,9 @@ void ann_start_qlearning(int epochs, float gamma, float epsilon, int steps_ms)
 
 	// while(!HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin));
 
-	HAL_Delay(1000);
 
-	ann_executing(ann, steps_ms);
-
-}
-
-void ann_executing(struct fann *ann, int steps_ms)
-{
-	fann_type new_inputs[NUM_INPUTS];
+	// ann_executing(ann, steps_ms);
+fann_type new_inputsn[NUM_INPUTS];
 
 	int cnt_rnd_moves = 0;
 	//walk after training
@@ -404,9 +398,9 @@ void ann_executing(struct fann *ann, int steps_ms)
 	while(1)
 	{
 		//get position
-		ann_getInputPositions(new_inputs);
+		ann_getInputPositions(new_inputsn);
 		//execute ann
-		fann_type *exec_out = fann_run(ann, new_inputs);
+		fann_type *exec_out = fann_run(ann, new_inputsn);
 
 		ann_displayInputOutputFANN(NULL, 0, exec_out, NUM_OUTPUTS);
 
@@ -419,7 +413,7 @@ void ann_executing(struct fann *ann, int steps_ms)
 
 			ann_set_new_motor(ann_getMaxQandAction(x, exec_out, NULL) * NUM_SERVO_MOT + x);
 
-			move_dist += fabsf(new_inputs[x] - new_inputs[x + NUM_SERVO_MOT]);
+			move_dist += fabsf(new_inputsn[x] - new_inputsn[x + NUM_SERVO_MOT]);
 		}
 
 		//push the network to move in a loop
@@ -438,7 +432,7 @@ void ann_executing(struct fann *ann, int steps_ms)
 		}
 
 		//let it move
-		HAL_Delay(steps_ms);
+		// HAL_Delay(steps_ms);
 		while(!servo_allInPos());
 
 		//if button pressed
@@ -448,6 +442,62 @@ void ann_executing(struct fann *ann, int steps_ms)
 		// 	return;
 		// }
 	}
+}
+
+void ann_executing(struct fann *ann, int steps_ms)
+{
+	// fann_type new_inputs[NUM_INPUTS];
+
+	// int cnt_rnd_moves = 0;
+	// //walk after training
+	// //execute forever
+	// while(1)
+	// {
+	// 	//get position
+	// 	ann_getInputPositions(new_inputs);
+	// 	//execute ann
+	// 	fann_type *exec_out = fann_run(ann, new_inputs);
+
+	// 	ann_displayInputOutputFANN(NULL, 0, exec_out, NUM_OUTPUTS);
+
+	// 	float move_dist = 0.0f;
+
+	// 	//do the action that the ann predict...
+	// 	//search the maximum in the output array
+	// 	for(int x = 0; x < NUM_SERVO_MOT; x++)
+	// 	{
+
+	// 		ann_set_new_motor(ann_getMaxQandAction(x, exec_out, NULL) * NUM_SERVO_MOT + x);
+
+	// 		move_dist += fabsf(new_inputs[x] - new_inputs[x + NUM_SERVO_MOT]);
+	// 	}
+
+	// 	//push the network to move in a loop
+	// 	if(move_dist <= 0.0)
+	// 	{
+
+	// 		if(cnt_rnd_moves++ > 3)
+	// 		{
+	// 			cnt_rnd_moves = 0;
+	// 			printf("Robot stopping! Use random move!\n");
+	// 			for(int x = 0; x < NUM_SERVO_MOT; x++)
+	// 			{
+	// 				ann_set_new_motor((rand() % 3) * NUM_SERVO_MOT + x);
+	// 			}
+	// 		}
+	// 	}
+
+	// 	//let it move
+	// 	// HAL_Delay(steps_ms);
+	// 	while(!servo_allInPos());
+
+	// 	//if button pressed
+	// 	// if(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin))
+	// 	// {
+	// 	// 	while(HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin));
+	// 	// 	return;
+	// 	// }
+	// }
 }
 
 static int ann_getMaxQandAction(int servo_mot, fann_type *ann_output_vec, fann_type *maxQ)
