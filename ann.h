@@ -10,8 +10,9 @@
 #ifndef ANN_H_
 #define ANN_H_
 #include "fann.h"
-#include "servo.h"
-
+#include <stdbool.h>
+#include <string.h>
+#include <stdint.h>
 
 //set this define to train more complex led pattern
 //undefine to choose just on led to blink

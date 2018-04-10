@@ -9,9 +9,13 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <string.h>
+#include <stdint.h>
 
 #include "fann.h"
 
+#define SERVO_MAXIMUM_ANGLE_US	1700
+#define SERVO_MINIMUM_ANGLE_US	1200
 
 #define NORMALIZE_POSITION(__x)		(((float)(__x - SERVO_MINIMUM_ANGLE_US) \
 									/ (float)(SERVO_MAXIMUM_ANGLE_US - SERVO_MINIMUM_ANGLE_US)) * 2.0f - 1.0f);
