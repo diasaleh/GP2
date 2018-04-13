@@ -4,7 +4,7 @@ def main():
     import time
     import RPi.GPIO as GPIO
     #Declare Variables
-    Servo_pin = 35
+    Servo_pin = 24
     angle = 45
     freq = 50
     #Setup board
